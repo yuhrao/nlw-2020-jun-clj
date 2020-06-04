@@ -1,0 +1,6 @@
+{:paths ["src" "resources"]
+ :dependencies {org.clojure/clojure {:mvn/version "1.10.1"}        seancorfield/next.jdbc {:mvn/version "1.0.462"}}
+
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.632"}}}} }
