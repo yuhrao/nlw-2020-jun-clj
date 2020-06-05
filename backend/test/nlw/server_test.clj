@@ -3,4 +3,4 @@
             [clojure.test :refer [deftest is]]))
 
 (deftest nothing
-  (is true))
+  (is (= 1 1)))
