@@ -54,5 +54,4 @@
      (reset! *server* (http/start server)))))
 
 (defn -main [& _]
-  (doto "Hello World!"
-    prn))
+  (start-server! :prod))
