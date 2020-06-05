@@ -13,6 +13,8 @@
 (def app-routes (route-table/table-routes #{["/hello" :get hello]}))
 (def url-for (route/url-for-routes app-routes))
 
+(defonce *server* (atom nil))
+
 (defn stop-server! []
   (swap! *server* http/stop))
 
@@ -37,6 +39,19 @@
                        (= profile :dev)  (add-dev-config)
                        (= profile :prod) (add-prod-config))]
      (http/create-server full-config))))
+
+(def base-map {::http/routes app-routes
+               ::http/type   :immutant
+               ::http/port   3000})
+
+(defn start-server!
+  ([] (start-server! :dev))
+  ([profile]
+   (let [server (map->server base-map
+                             profile)]
+     (when @*server*
+       (stop-server!))
+     (reset! *server* (http/start server)))))
 
 (defn -main [& _]
   (doto "Hello World!"
