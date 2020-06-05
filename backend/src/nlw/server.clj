@@ -18,7 +18,7 @@
 (defn stop-server! []
   (swap! *server* http/stop))
 
-(defn add-dev-config [m]
+(defn add-local-config [m]
   (-> m
       (http/dev-interceptors)
       (assoc ::http/join? false)))
@@ -36,7 +36,7 @@
    (let [base-config (-> m
                          (http/default-interceptors))
          full-config (cond-> base-config
-                       (= profile :dev)  (add-dev-config)
+                       (contains? #{:dev :test} profile)  (add-local-config)
                        (= profile :prod) (add-prod-config))]
      (http/create-server full-config))))
 
