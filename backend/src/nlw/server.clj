@@ -30,15 +30,14 @@
       (assoc ::http/port 80)
       (assoc ::http/allowed-origins (cors/allow-origin {:creds true :allowed-origins (constantly true)}))))
 
-(defn map->server
-  ([m] (map->server m :dev))
+(defn map->service
+  ([m] (map->service m :dev))
   ([m profile]
    (let [base-config (-> m
-                         (http/default-interceptors))
-         full-config (cond-> base-config
-                       (contains? #{:dev :test} profile)  (add-local-config)
-                       (= profile :prod) (add-prod-config))]
-     (http/create-server full-config))))
+                         (http/default-interceptors))]
+     (cond-> base-config
+           (contains? #{:dev :test} profile) (add-local-config)
+           (= profile :prod)                 (add-prod-config)))))
 
 (def base-map {::http/routes app-routes
                ::http/type   :immutant
@@ -47,8 +46,9 @@
 (defn start-server!
   ([] (start-server! :dev))
   ([profile]
-   (let [server (map->server base-map
-                             profile)]
+   (let [server (-> base-map
+                    (map->service profile)
+                    http/create-server)]
      (when @*server*
        (stop-server!))
      (reset! *server* (http/start server)))))
