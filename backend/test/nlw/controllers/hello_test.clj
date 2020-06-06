@@ -1,4 +1,4 @@
-(ns nlw.controller.hello-test
+(ns nlw.controllers.hello-test
   (:require [clj-http.client :as http-client]
             [clojure.test :refer [deftest is testing]]
             [io.pedestal.http :as http]
@@ -6,7 +6,8 @@
             [io.pedestal.test :as pedestal-test]
             [nlw.controllers.hello :as hello]
             [nlw.server :as server]
-            [nlw.service :as service]))
+            [nlw.service :as service]
+            [matcher-combinators.test]))
 
 (def test-service (::http/service-fn (-> service/base-config
                                          (service/map->service-map :test)

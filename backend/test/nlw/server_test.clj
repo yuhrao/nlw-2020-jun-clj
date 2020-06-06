@@ -1,7 +1,6 @@
 (ns nlw.server-test
   (:require [clojure.test :refer [deftest is testing]]
             [io.pedestal.http :as http]
-            [matcher-combinators.test]
             [nlw.server :as server]))
 
 (deftest server-startup

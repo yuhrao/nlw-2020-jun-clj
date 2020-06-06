@@ -1,6 +1,7 @@
 (ns nlw.service-test
   (:require [nlw.service :as service]
             [clojure.test :refer [deftest testing is]]
+            [matcher-combinators.test]
             [io.pedestal.http :as http]
             [clojure.set :as set]))
 
