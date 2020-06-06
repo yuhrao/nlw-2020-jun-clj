@@ -8,15 +8,11 @@
 (def hello
   {:name ::hello
    :enter (fn [context]
-            (assoc context :responde (ring-res/response "Hello World")))})
+            (assoc context :response (ring-res/response "Hello World")))})
 
 (def app-routes (route-table/table-routes #{["/hello" :get hello]}))
-(def url-for (route/url-for-routes app-routes))
 
-(defonce *server* (atom nil))
-
-(defn stop-server! []
-  (swap! *server* http/stop))
+(defonce server (atom nil))
 
 (defn add-local-config [m]
   (-> m
@@ -43,15 +39,18 @@
                ::http/type   :immutant
                ::http/port   3000})
 
+(defn stop-server! []
+  (swap! server http/stop))
+
 (defn start-server!
   ([] (start-server! :dev))
   ([profile]
-   (let [server (-> base-map
+   (let [server* (-> base-map
                     (map->service profile)
                     http/create-server)]
-     (when @*server*
+     (when @server
        (stop-server!))
-     (reset! *server* (http/start server)))))
+     (reset! server (http/start server*)))))
 
 (defn -main [& _]
   (start-server! :prod))
