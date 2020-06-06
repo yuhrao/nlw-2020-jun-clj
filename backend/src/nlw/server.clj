@@ -37,6 +37,7 @@
 
 (def base-map {::http/routes app-routes
                ::http/type   :immutant
+               ::http/file-path "resources/"
                ::http/port   3000})
 
 (defn stop-server! []
