@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ $1 == up ]]; then
+   docker-compose up -d --remove-orphans database
+elif [[ $1 == down ]]; then
+   docker-compose down --remove-orphans --volumes
+elif [[ $1 == prune ]]; then
+   docker-compose down --remove-orphans --volumes && sudo rm -rf /tmp/pgdata
+fi
