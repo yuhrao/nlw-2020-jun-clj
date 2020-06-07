@@ -1,0 +1,2 @@
+{:up   {:create-schema [:nlw]}
+ :down {:drop-schema [:nlw]}}

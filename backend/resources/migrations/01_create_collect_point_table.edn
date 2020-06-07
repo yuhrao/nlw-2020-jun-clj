@@ -1,0 +1,12 @@
+{:up
+ {:create-table [:nlw.t-collect-point],
+  :with-columns [[[:id :uuid #sql/call [:primary-key]]
+                  [:name :varchar :not :null]
+                  [:email :varchar :not :null]
+                  [:whatsapp :varchar :not :null]
+                  [:image :varchar :not :null]
+                  [:city :varchar :not :null]
+                  [:uf #sql/call [:varchar 2] :not :null]
+                  [:longitude :numeric :not :null]
+                  [:latitude :numeric :not :null]]]}
+ :down {:drop-table [:nlw.t-collect-point]}}
