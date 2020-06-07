@@ -1,0 +1,13 @@
+version: '3'
+services:
+  database:
+    image: postgres:12.3-alpine
+    container_name: database
+    environment:
+      - POSTGRES_PASSWORD=next_level
+      - POSTGRES_USER=nlw
+      - PGDATA=/data
+    volumes:
+      - "/tmp/pgdata:/data"
+    ports:
+      - "5432:5432"
