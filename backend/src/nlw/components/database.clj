@@ -1,14 +1,12 @@
 (ns nlw.components.database
-  (:require [next.jdbc :as jdbc]
-            [integrant.core :as ig]))
+  (:require [integrant.core :as ig]
+            [next.jdbc :as jdbc]))
 
-(defmethod ig/init-key ::postgres [_ {:keys [config migrate]}]
-  (let [data-source (jdbc/get-datasource config)
-        connection  (jdbc/get-connection config)]
-
-    (migrate data-source)
+(defmethod ig/init-key ::postgres [_ {:keys [config migration]}]
+  (let [data-source (jdbc/get-datasource config)]
+    (migration data-source)
     {:data-source data-source
-     :conn        connection}))
+     :db-spec config}))
 
 (comment
   (def db-spec {:dbtype   "postgresql"
