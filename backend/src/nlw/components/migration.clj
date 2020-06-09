@@ -132,17 +132,3 @@
          (medley/map-vals sql/format)
          (medley/map-kv (fn [& kv]
                           (execute-migration-stmt! data-source :down kv))))))
-
-(comment
-
-  (create-migration-tables! nlw.components.database/data-source)
-
-  (get-migration-files "resources/migrations")
-
-  (get-migrated-files nlw.components.database/data-source)
-
-  (migrations-up! nlw.components.database/data-source (get-migration-files "resources/migrations"))
-
-  (migrations-down! nlw.components.database/data-source (get-migration-files "resources/migrations"))
-
-  )
