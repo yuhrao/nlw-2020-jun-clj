@@ -6,4 +6,10 @@
    :enter (fn [context]
             (assoc context :response (ring-res/response "Hello World")))})
 
-(def routes #{["/hello" :get hello]})
+(def hello-post
+  {:name ::hello-post
+   :enter (fn [context]
+            (assoc context :response (ring-res/response {:hello "world!"})))})
+
+(def routes #{["/hello" :get hello]
+              ["/hello" :post [nlw.interceptors.default/json-interception hello-post]]})
