@@ -4,10 +4,10 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.test :as pedestal-test]
+            matcher-combinators.test
             [nlw.controllers.hello :as hello]
-            [nlw.server :as server]
-            [nlw.service :as service]
-            [matcher-combinators.test]))
+            [nlw.main :as server]
+            [nlw.service :as service]))
 
 (def test-service (::http/service-fn (-> service/base-config
                                          (service/map->service-map :test)

@@ -1,7 +1,7 @@
 (ns nlw.server-test
   (:require [clojure.test :refer [deftest is testing]]
             [io.pedestal.http :as http]
-            [nlw.server :as server]))
+            [nlw.main :as server]))
 
 (deftest server-startup
   (testing "Server should start withoud crash"
