@@ -1,4 +1,4 @@
-(ns nlw.components.server
+(ns nlw.components.pedestal
   (:require [integrant.core :as ig]
             [io.pedestal.http :as http]
             [io.pedestal.http.cors :as cors]
@@ -18,26 +18,28 @@
       http/default-interceptors))
 
 (defn map->interceptor [{:keys [type value args]}]
+  (prn type " | " value " | " args)
   (let [interceptor-map (case type
                           :map  value
-                          :function (apply value args))]
+                          :fn (apply value args))]
     (interceptor/map->Interceptor interceptor-map)))
 
 (defn- add-default-interceptors [default-interceptors]
-  (let [interceptors (map map->interceptor default-interceptors)]
-    (fn [config]
-      (update config ::http/interceptors (comp vec (partial concat interceptors))))))
+  (if default-interceptors
+    (let [interceptors (map map->interceptor default-interceptors)]
+      (fn [config]
+        (update config ::http/interceptors (comp vec #(concat % interceptors)))))
+    identity))
 
-(defmethod ig/prep-key ::server [_ {:keys [default-interceptors] :as server}]
-  (-> server
-      (update :config map->base-service)
-      (update :config (add-default-interceptors default-interceptors))
-      (update :config http/create-server)
-      (dissoc :default-interceptors)))
+(defmethod ig/init-key ::service [_ {:keys [default-interceptors config]}]
+  (-> config
+      map->base-service
+      ((add-default-interceptors default-interceptors))
+      http/create-server))
 
-(defmethod ig/init-key ::server [_ {:keys [config]}]
-  (let [server (http/start config)
-        {::http/keys [routes port host]} config]
+(defmethod ig/init-key ::server [_ {:keys [service]}]
+  (let [server (http/start service)
+        {::http/keys [routes port host]} service]
     {:instance server
      :stop     (fn [] (http/stop server))
      :url-for  (route/url-for-routes routes :port port :host host :scheme :http)
