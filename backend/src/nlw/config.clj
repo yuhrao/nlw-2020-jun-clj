@@ -21,11 +21,3 @@
     (if (.exists file)
       (aero/read-config file {:profile profile})
       (throw (ex-info (str "Configuration file not found at:" config-path) {}))))))
-
-(comment
-  (def sys (-> (load)
-               ig/prep
-               ig/init))
-  (ig/halt! sys)
-
-  )
