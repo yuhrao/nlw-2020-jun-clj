@@ -1,6 +1,5 @@
 (ns sql
   (:require [honeysql.core :as sql]
-            [honeysql.format :as sql-fmt]
             [honeysql-postgres.helpers :as pg-helper]
             [migrations.format]
             [migrations.helpers]
