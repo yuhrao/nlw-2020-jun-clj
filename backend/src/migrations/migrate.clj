@@ -2,6 +2,7 @@
   (:require [aero.core :as aero]
             [clojure.java.io :as io]
             [honeysql-postgres.helpers :as pg-helper]
+            [honeysql-postgres.format]
             [honeysql.core :as sql]
             [honeysql.helpers :as sql-helper]
             [medley.core :as medley]
@@ -60,6 +61,7 @@
       :down (remove-migration-entry! data-source file))))
 
 (defn up! [data-source migration-map]
+  (create-migration-tables! data-source)
   (->> migration-map
        (exclude-migrated-files data-source)
        (medley/map-vals :up)
@@ -68,6 +70,7 @@
                         (execute-migration-stmt! data-source :up kv)))))
 
 (defn down! [data-source migration-map]
+  (create-migration-tables! data-source)
   (let [migrated-files   (get-migrated-files data-source)
         migration-sorted (-> (into (sorted-map-by #(compare %2 %1)) migration-map)
                              (select-keys migrated-files))]

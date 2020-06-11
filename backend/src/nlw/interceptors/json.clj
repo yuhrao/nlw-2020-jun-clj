@@ -2,7 +2,7 @@
   (:require [cheshire.core :as json]))
 
 (def json-interception
-  {:name  ::json
+  {:name  ::parser
    :enter (fn [{:keys [request] :as context}]
             (let [{method :request-method
                    body   :body} (select-keys request [:request-method :body])]

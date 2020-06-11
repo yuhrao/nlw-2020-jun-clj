@@ -1,22 +1,28 @@
-{:nlw.components.database/postgres {:config {:dbtype   "postgresql"
-                                             :dbname   "postgres"
-                                             :host     #profile {:dev  "localhost"
-                                                                 :test "localhost"}
-                                             :port     #profile {:dev  5432
-                                                                 :test 5432}
-                                             :user     #profile {:dev "nlw"}
-                                             :password #profile {:dev "next_level"}}}
+{:nlw.components.migration/migration {:path "resources/migrations"}
+ :nlw.components.database/postgres   {:config     {:dbtype   "postgresql"
+                                                   :dbname   "postgres"
+                                                   :host     #profile {:dev  "localhost"
+                                                                       :test "localhost"}
+                                                   :port     #profile {:dev  5432
+                                                                       :test 5432}
+                                                   :user     #profile {:dev "nlw"}
+                                                   :password #profile {:dev "next_level"}}
+                                      :migrations #ig/ref :nlw.components.migration/migration}
 
- :nlw.components.server/server {:config {:host      "0.0.0.0"
-                                         :port      #profile {:prod 80
-                                                              :test 3000
-                                                              :dev  3000}
-                                         :routes    [#resolve nlw.controllers.hello/routes]
-                                         :file-path "resources/static/"
-                                         :type      :immutant
-                                         :join?     #profile {:dev  false
-                                                              :test false
-                                                              :prod true}}
+ :nlw.components.pedestal/service {:config {:host      "0.0.0.0"
+                                            :port      #profile {:prod 80
+                                                                 :test 3000
+                                                                 :dev  3000}
+                                            :routes    [#resolve nlw.controllers.hello/routes]
+                                            :file-path "resources/static/"
+                                            :type      :immutant
+                                            :join?     #profile {:dev  false
+                                                                 :test false
+                                                                 :prod true}}
 
-                                :default-interceptors [{:type  :map
-                                                        :value #resolve nlw.interceptors.json/json-interception}]}}
+                                   :default-interceptors [{:type  :map
+                                                           :value #resolve nlw.interceptors.json/json-interception}
+                                                          {:type  :fn
+                                                           :value #resolve nlw.interceptors.database/postgres-interceptor
+                                                           :args  [#ig/ref :nlw.components.database/postgres]}]}
+ :nlw.components.pedestal/server {:service #ig/ref :nlw.components.pedestal/service}}
