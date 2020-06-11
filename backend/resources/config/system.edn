@@ -1,12 +1,22 @@
-{:nlw.components.server/server {:config               {:host      "0.0.0.0"
-                                                       :port      #profile {:prod 80
-                                                                            :test 3000
-                                                                            :dev  3000}
-                                                       :routes    [#resolve nlw.controllers.hello/routes]
-                                                       :file-path "resources/static/"
-                                                       :type      :immutant
-                                                       :join?     #profile {:dev  false
-                                                                            :test false
-                                                                            :prod true}}
+{:nlw.components.database/postgres {:config {:dbtype   "postgresql"
+                                             :dbname   "postgres"
+                                             :host     #profile {:dev  "localhost"
+                                                                 :test "localhost"}
+                                             :port     #profile {:dev  5432
+                                                                 :test 5432}
+                                             :user     #profile {:dev "nlw"}
+                                             :password #profile {:dev "next_level"}}}
+
+ :nlw.components.server/server {:config {:host      "0.0.0.0"
+                                         :port      #profile {:prod 80
+                                                              :test 3000
+                                                              :dev  3000}
+                                         :routes    [#resolve nlw.controllers.hello/routes]
+                                         :file-path "resources/static/"
+                                         :type      :immutant
+                                         :join?     #profile {:dev  false
+                                                              :test false
+                                                              :prod true}}
+
                                 :default-interceptors [{:type  :map
                                                         :value #resolve nlw.interceptors.json/json-interception}]}}
