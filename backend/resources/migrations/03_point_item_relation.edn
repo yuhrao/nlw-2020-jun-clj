@@ -1,8 +1,8 @@
-{:up   {:create-table [:nlw.point-item],
+{:up   {:create-table [:nlw.t-point-item],
         :with-columns
         [[[:id :uuid #sql/call [:primary-key]]
           [:point-id
            :uuid #sql/call [:foreign :nlw.t-collect-point :id]]
           [:item-id
-           :uuid :foreign :nlw.t-collection-item :id]]]}
- :down {:drop-table [:nlw.t-collecttable-item]}}
+           :uuid  #sql/call [:foreign :nlw.t-collection-item :id]]]]}
+ :down {:drop-table [:nlw.t-point-item]}}
