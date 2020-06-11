@@ -4,5 +4,5 @@
 
 (defmethod ig/init-key ::postgres [_ {:keys [config migration]}]
   (let [data-source (jdbc/get-datasource config)]
-    (migration data-source)
+    (when migration (migration data-source))
     data-source))
