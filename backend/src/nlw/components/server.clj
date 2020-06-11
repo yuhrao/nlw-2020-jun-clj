@@ -1,10 +1,11 @@
 (ns nlw.components.server
   (:require [integrant.core :as ig]
             [io.pedestal.http :as http]
-            [io.pedestal.http.route.definition.table :as route-table]
+            [io.pedestal.http.cors :as cors]
             [io.pedestal.http.route :as route]
-            [medley.core :as medley]
-            [io.pedestal.http.cors :as cors]))
+            [io.pedestal.http.route.definition.table :as route-table]
+            [io.pedestal.interceptor :as interceptor]
+            [medley.core :as medley]))
 
 (defn qualify-pedestal-ks [m]
   (medley/map-keys #(keyword "io.pedestal.http" (name %)) m))
@@ -16,10 +17,23 @@
       qualify-pedestal-ks
       http/default-interceptors))
 
-(defmethod ig/prep-key ::server [_ server]
+(defn map->interceptor [{:keys [type value args]}]
+  (let [interceptor-map (case type
+                          :map  value
+                          :function (apply value args))]
+    (interceptor/map->Interceptor interceptor-map)))
+
+(defn- add-default-interceptors [default-interceptors]
+  (let [interceptors (map map->interceptor default-interceptors)]
+    (fn [config]
+      (update config ::http/interceptors (comp vec (partial concat interceptors))))))
+
+(defmethod ig/prep-key ::server [_ {:keys [default-interceptors] :as server}]
   (-> server
       (update :config map->base-service)
-      (update :config http/create-server)))
+      (update :config (add-default-interceptors default-interceptors))
+      (update :config http/create-server)
+      (dissoc :default-interceptors)))
 
 (defmethod ig/init-key ::server [_ {:keys [config]}]
   (let [server (http/start config)
