@@ -1,6 +1,6 @@
-{:up   {:create-table [:nlw.t-collecttable-item],
+{:up   {:create-table [:nlw.t-collection-item],
         :with-columns
         [[[:id :uuid #sql/call [:primary-key]]
           [:title :varchar :not :null]
           [:image :varchar :not :null]]]}
- :down {:drop-table [:nlw.t-collecttable-item]}}
+ :down {:drop-table [:nlw.t-collection-item]}}
