@@ -9,6 +9,9 @@
 (defmethod sql-fmt/fn-handler "required" [& _]
   "NOT NULL")
 
+(defmethod sql-fmt/fn-handler "foreign" [_ table column]
+  (str "REFERENCES " (name table) "(" (name column) ")"))
+
 (defmethod sql-fmt/format-clause :order-by-desc [[_ fields] _]
   (str "ORDER BY "
        (sql-fmt/comma-join (for [field fields]
