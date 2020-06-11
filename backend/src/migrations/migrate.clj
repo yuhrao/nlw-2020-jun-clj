@@ -34,6 +34,10 @@
         execute!
         transducer)))
 
+(defn- exclude-migrated-files [data-source migration-map]
+  (let [migrated-files (get-migrated-files data-source)]
+    (apply dissoc migration-map migrated-files)))
+
 (defn- create-migration-entry! [data-source filename]
   (let [execute! (partial jdbc/execute! data-source)]
     (-> (sql-helper/insert-into migration-table)
@@ -49,11 +53,8 @@
         sql/format
         execute!)))
 
-(defn- exclude-migrated-files [data-source migration-map]
-  (let [migrated-files (get-migrated-files data-source)]
-    (apply dissoc migration-map migrated-files)))
-
 (defn- execute-migration-stmt! [data-source operation [file stmt]]
+  (println (str "Executing " (name operation) " Migration " file "\nStatement: " stmt))
   (let [execute! (partial jdbc/execute! data-source)]
     (execute! stmt)
     (case operation
