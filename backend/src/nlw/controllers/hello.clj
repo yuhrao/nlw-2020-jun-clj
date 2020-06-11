@@ -12,4 +12,4 @@
             (assoc context :response (ring-res/response {:hello "world!"})))})
 
 (def routes #{["/hello" :get hello]
-              ["/hello" :post [nlw.interceptors.default/json-interception hello-post]]})
+              ["/hello" :post hello-post]})
