@@ -1,4 +1,4 @@
-(ns nlw.interceptors.default
+(ns nlw.interceptors.json
   (:require [cheshire.core :as json]
             [io.pedestal.interceptor :as interceptor]))
 
