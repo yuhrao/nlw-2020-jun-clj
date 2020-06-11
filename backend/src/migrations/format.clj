@@ -10,7 +10,9 @@
   "NOT NULL")
 
 (defmethod sql-fmt/fn-handler "foreign" [_ table column]
-  (str "REFERENCES " (name table) "(" (name column) ")"))
+  (let [table-normalized (sql-fmt/to-sql table)
+        coumn-normalized (sql-fmt/to-sql column)]
+    (str "REFERENCES " table-normalized "(" coumn-normalized ")")))
 
 (defmethod sql-fmt/format-clause :order-by-desc [[_ fields] _]
   (str "ORDER BY "
@@ -21,10 +23,10 @@
                                       (cons (sql-fmt/to-sql field)
                                             (for [modifier modifiers]
                                               (case modifier
-                                                :desc "DESC"
-                                                :asc "ASC"
+                                                :desc        "DESC"
+                                                :asc         "ASC"
                                                 :nulls-first "NULLS FIRST"
-                                                :nulls-last "NULLS LAST"
+                                                :nulls-last  "NULLS LAST"
                                                 "")))))
                        (sql-fmt/to-sql field)))) " DESC"))
 
