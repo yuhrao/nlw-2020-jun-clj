@@ -8,8 +8,9 @@
 
 (def hello-post
   {:name ::hello-post
-   :enter (fn [context]
-            (assoc context :response (ring-res/response {:hello "world!"})))})
+   :enter (fn [{:keys [postgres] :as context}]
+            (assoc context :response (ring-res/response {:hello "world!"
+                                                         :postgres (.toString postgres)})))})
 
 (def routes #{["/hello" :get hello]
               ["/hello" :post hello-post]})
