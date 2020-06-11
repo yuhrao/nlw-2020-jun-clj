@@ -1,6 +1,5 @@
 (ns nlw.interceptors.json
-  (:require [cheshire.core :as json]
-            ))
+  (:require [cheshire.core :as json]))
 
 (def json-interception
   {:name  ::json
@@ -11,5 +10,8 @@
                         (cond-> body
                           true                             slurp
                           (contains? #{:put :post} method) (json/parse-string true)))))
-   :leave (fn [context]
-            (update-in context [:response :body] #(json/encode % true)))})
+   :leave (fn [{:keys [response] :as context}]
+            (let [response-content-type (get-in response [:headers "Content-Type"] "application/json")]
+              (cond-> context
+                true                                         (assoc-in [:response :headers "Content-Type"] response-content-type)
+                (= response-content-type "application/json") (update-in [:response :body] #(json/encode % true)))))})
