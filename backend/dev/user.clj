@@ -2,8 +2,7 @@
   (:require
    [nlw.config :as config]
    [integrant.repl :as ig-repl]
-   [integrant.repl.state :as ig-state]
-   [integrant.core :as ig]))
+   [integrant.repl.state :as ig-state]))
 
 (defn prep!
   ([] (prep! :dev))
