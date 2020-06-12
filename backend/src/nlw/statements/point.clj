@@ -2,7 +2,7 @@
   (:require [honeysql.core :as sql]
             [honeysql.format]
             [honeysql.helpers :as sql-helper]
-            [honeysql-postgres.helpers :as pg-helper]
+            #_[honeysql-postgres.helpers :as pg-helper]
             [next.jdbc :as jdbc]))
 
 (def ^:private table-name :nlw.t-collect-point)
