@@ -1,7 +1,7 @@
 (ns utils.uuid
   (:import java.util.UUID))
 
-(defn map->uuid-fn [m ks]
+(defn map->uuid-fn [& ks]
   (fn [m]
     (-> m
       (select-keys ks)
