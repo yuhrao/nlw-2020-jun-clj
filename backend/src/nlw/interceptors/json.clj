@@ -1,5 +1,17 @@
 (ns nlw.interceptors.json
-  (:require [cheshire.core :as json]))
+  (:require [cheshire.core :as json]
+            [medley.core :as medley]))
+
+(defn unqualify-keys [x]
+  (let [conversion-fn (comp keyword name)]
+    (if (map? x)
+      (medley/map-keys conversion-fn x)
+      (map unqualify-keys x))))
+
+(defn map->json [m]
+  (-> m
+      unqualify-keys
+      (json/encode true)))
 
 (def json-interception
   {:name  ::parser
@@ -14,4 +26,4 @@
             (let [response-content-type (get-in response [:headers "Content-Type"] "application/json")]
               (cond-> context
                 true                                         (assoc-in [:response :headers "Content-Type"] response-content-type)
-                (= response-content-type "application/json") (update-in [:response :body] #(json/encode % true)))))})
+                (= response-content-type "application/json") (update-in [:response :body] map->json))))})
