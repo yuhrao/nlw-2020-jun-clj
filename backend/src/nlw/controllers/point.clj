@@ -3,7 +3,7 @@
             [utils.uuid :as uuid]
             [nlw.response :as res]))
 
-(def point->uuid (uuid/map->uuid-fn :email :name))
+(def point->uuid (partial uuid/from-map [:email :name]))
 
 (def save
   {:name ::save
