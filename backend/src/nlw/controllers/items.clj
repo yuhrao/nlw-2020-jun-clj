@@ -22,8 +22,9 @@
   {:name  ::get-all
    :enter (fn [{:keys [postgres] :as context}]
             (try
-              (let [entities (item-stmt/fetch-all postgres) ]
-                (-> context (res/->ok entities)))
+              (let [entities (item-stmt/fetch-all postgres)
+                    cnt      (count entities)]
+                (-> context (res/->ok entities {"X-Entities-Count" (str cnt)})))
               (catch Throwable _
                 (-> context (res/->internal-server-error)))))})
 
