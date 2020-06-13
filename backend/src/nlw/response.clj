@@ -1,41 +1,42 @@
-(ns nlw.response)
+(ns nlw.response
+  (:require [medley.core :as medley]))
 
-(defn ->ok
-  ([] (->ok nil))
-  ([body] (->ok body nil))
-  ([body headers]
-  (cond-> {:status 200}
-    body (assoc :body body)
-    headers (assoc :headers headers))))
+(defn- response-header [response header-map]
+  (if header-map
+    (update response :headers merge header-map)
+    response))
 
-(defn ->created
-  ([] (->created nil))
-  ([body] (->created body nil))
-  ([body headers]
-  (cond-> {:status 201}
-    body    (assoc :body body)
-    headers (assoc :headers headers))))
+(defn- response-body [response body]
+  (if body
+    (assoc response :body body)
+    response))
 
-(defn ->internal-server-error
-  ([] (->internal-server-error nil))
-  ([body] (->internal-server-error body nil))
-  ([body headers]
-  (cond-> {:status 500}
-    body    (assoc :body body)
-    headers (assoc :headers headers))))
+(defn- response-status [response status]
+  (assoc response :status status))
 
-(defn ->bad-request
-  ([] (->bad-request nil))
-  ([body] (->bad-request body nil))
-  ([body headers]
-  (cond-> {:status 400}
-    body    (assoc :body body)
-    headers (assoc :headers headers))))
+(defn ->response [status]
+  (let [res-fn (fn [context body header-map]
+                 (-> context
+                     (update :response merge {})
+                     (update :response response-status status)
+                     (update :response response-body body)
+                     (update :response response-header header-map)))]
+    (fn
+      ([context] (res-fn context nil nil))
+      ([context body] (res-fn context body nil))
+      ([context body header-map] (res-fn context body header-map)))))
 
-(defn ->not-found
-  ([] (->not-found nil))
-  ([body] (->not-found body nil))
-  ([body headers]
-  (cond-> {:status 500}
-    body    (assoc :body body)
-    headers (assoc :headers headers))))
+(def ->ok
+  (->response 200))
+
+(def ->created
+  (->response 201))
+
+(def ->bad-request
+  (->response 400))
+
+(def ->not-found
+  (->response 404))
+
+(def ->internal-server-error
+  (->response 500))
