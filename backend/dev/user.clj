@@ -36,6 +36,13 @@
 (defn system []
   (ig-state/system))
 
+(def ds {:dbtype   "postgresql",
+           :dbname   "postgres",
+           :host     "localhost",
+           :port     5432,
+           :user     "nlw",
+           :password "next_level"})
+
 (comment
   (prep!)
   (go)
