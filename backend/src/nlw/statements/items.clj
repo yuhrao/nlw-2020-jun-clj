@@ -22,3 +22,10 @@
          (sql-helper/where queries)
          sql/format
          execute!))))
+
+(defn save! [data-source & entities]
+  (let [execute! (partial jdbc/execute! data-source)]
+    (-> (sql-helper/insert-into item-table)
+        (sql-helper/values entities)
+        sql/format
+        execute!)))
