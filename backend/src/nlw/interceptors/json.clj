@@ -1,16 +1,21 @@
 (ns nlw.interceptors.json
   (:require [cheshire.core :as json]
-            [medley.core :as medley]))
+            [medley.core :as medley]
+            [clojure.walk :as walk]))
 
-(defn unqualify-keys [x]
-  (let [conversion-fn (comp keyword name)]
-    (if (map? x)
-      (medley/map-keys conversion-fn x)
-      (map unqualify-keys x))))
+(defn unqualify-keyword [k]
+  ((comp keyword name) k))
+
+(defn recursive-unqualify-keys [c]
+  (walk/postwalk (fn [x]
+                   (if (keyword? x)
+                     (unqualify-keyword x)
+                     x))
+                 c))
 
 (defn map->json [m]
   (some-> m
-          unqualify-keys
+          recursive-unqualify-keys
           (json/encode true)))
 
 (def json-interception
