@@ -5,8 +5,8 @@
 
 (def point->uuid (uuid/map->uuid-fn :email :name))
 
-(def post-point-interceptor
-  {:name ::post
+(def save
+  {:name ::save
    :enter (fn [{:keys [request postgres] :as context}]
             (let [{:keys [body]} request
                   point-id (point->uuid body)
@@ -19,3 +19,4 @@
                   (assoc context :response (res/->internal-server-error))))))})
 
 (def routes #{["/point" :post post-point-interceptor]})
+(def routes #{["/points" :post save]
