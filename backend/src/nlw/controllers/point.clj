@@ -15,8 +15,16 @@
                 (point-stmt/save! postgres entity)
                 (assoc context :response (res/->ok entity))
                 (catch Throwable t
-                  (println t)
                   (assoc context :response (res/->internal-server-error))))))})
 
-(def routes #{["/point" :post post-point-interceptor]})
+(def get-all
+  {:name ::get-all
+   :enter (fn [{:keys [postgres] :as context}]
+            (try
+              (let [entities (point-stmt/fetch-all postgres)]
+                (assoc context :response (res/->ok entities)))
+              (catch Throwable t
+                (assoc context :response (res/->internal-server-error)))))})
+
 (def routes #{["/points" :post save]
+              ["/points" :get get-all]})
