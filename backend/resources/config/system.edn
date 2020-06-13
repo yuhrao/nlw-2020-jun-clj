@@ -14,7 +14,8 @@
                                                                  :test 3000
                                                                  :dev  3000}
                                             :routes    [#resolve nlw.controllers.hello/routes
-                                                        #resolve nlw.controllers.point/routes]
+                                                        #resolve nlw.controllers.point/routes
+                                                        #resolve nlw.controllers.items/routes]
                                             :file-path "resources/static/"
                                             :type      :immutant
                                             :join?     #profile {:dev  false
