@@ -18,12 +18,13 @@
                   (assoc context :response (res/->internal-server-error))))))})
 
 (def get-all
-  {:name ::get-all
+  {:name  ::get-all
    :enter (fn [{:keys [postgres] :as context}]
             (try
-              (let [entities (point-stmt/fetch-all postgres)]
-                (assoc context :response (res/->ok entities)))
-              (catch Throwable t
+              (let [entities (point-stmt/fetch-all postgres)
+                    cnt      (count entities)]
+                (-> context
+                    (assoc  :response (res/->ok entities {"X-Entities-Count" (str cnt)}))))
               (catch Throwable _
                 (assoc context :response (res/->internal-server-error)))))})
 
