@@ -9,9 +9,9 @@
       (map unqualify-keys x))))
 
 (defn map->json [m]
-  (-> m
-      unqualify-keys
-      (json/encode true)))
+  (some-> m
+          unqualify-keys
+          (json/encode true)))
 
 (def json-interception
   {:name  ::parser
