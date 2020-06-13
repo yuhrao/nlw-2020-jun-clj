@@ -6,11 +6,11 @@
 (def point->uuid (partial uuid/from-map [:email :name]))
 
 (def save
-  {:name ::save
+  {:name  ::save
    :enter (fn [{:keys [request postgres] :as context}]
             (let [{:keys [body]} request
-                  point-id (point->uuid body)
-                  entity (assoc body :id point-id)]
+                  point-id       (point->uuid body)
+                  entity         (assoc body :id point-id)]
               (try
                 (point-stmt/save! postgres entity)
                 (assoc context :response (res/->ok entity))
@@ -29,17 +29,17 @@
                 (assoc context :response (res/->internal-server-error)))))})
 
 (def by-id
-  {:name ::by-id
+  {:name  ::by-id
    :enter (fn [{:keys [request postgres] :as context}]
             (try
-              (let [{{:keys [id]} :path-params}  request
-                    entity (point-stmt/fetch-by-id postgres (uuid/from-str id))]
+              (let [{{:keys [id]} :path-params} request
+                    entity                      (point-stmt/fetch-by-id postgres (uuid/from-str id))]
 
                 (if  entity
                   (-> context
                       (assoc  :response (res/->ok entity)))
                   (-> (-> context
-                      (assoc  :response (res/->not-found))))))
+                          (assoc  :response (res/->not-found))))))
               (catch IllegalArgumentException _
                 (assoc context :response (res/->bad-request)))
               (catch Throwable _
