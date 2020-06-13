@@ -22,11 +22,12 @@
   {:name  ::parser
    :enter (fn [{:keys [request] :as context}]
             (let [{method :request-method
-                   body   :body} (select-keys request [:request-method :body])]
+                   body   :body} (select-keys request [:request-method :body])
+                  content-type (get-in request [:headers "Content-Type"] "application/json")]
               (assoc-in context [:request :body]
                         (cond-> body
                           true                             slurp
-                          (contains? #{:put :post} method) (json/parse-string true)))))
+                          (and (contains? #{:put :post} method) (= content-type "application/json")) (json/parse-string true)))))
    :leave (fn [{:keys [response] :as context}]
             (let [response-content-type (get-in response [:headers "Content-Type"] "application/json")]
               (cond-> context
