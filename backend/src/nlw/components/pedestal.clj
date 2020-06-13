@@ -18,7 +18,6 @@
       http/default-interceptors))
 
 (defn map->interceptor [{:keys [type value args]}]
-  (prn type " | " value " | " args)
   (let [interceptor-map (case type
                           :map  value
                           :fn (apply value args))]
