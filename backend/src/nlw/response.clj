@@ -8,6 +8,14 @@
     body (assoc :body body)
     headers (assoc :headers headers))))
 
+(defn ->created
+  ([] (->created nil))
+  ([body] (->created body nil))
+  ([body headers]
+  (cond-> {:status 201}
+    body    (assoc :body body)
+    headers (assoc :headers headers))))
+
 (defn ->internal-server-error
   ([] (->internal-server-error nil))
   ([body] (->internal-server-error body nil))
