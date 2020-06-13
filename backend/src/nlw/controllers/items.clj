@@ -28,5 +28,25 @@
               (catch Throwable _
                 (-> context (res/->internal-server-error)))))})
 
+(def by-id
+  {:name  ::by-id
+   :enter (fn [{:keys [request postgres] :as context}]
+            (try
+              (let [{{:keys [id]} :path-params} request
+                    entity                      (item-stmt/fetch-by-id postgres (uuid/from-str id))]
+
+                (if  entity
+                  (-> context
+                      (res/->ok entity))
+                  (-> context
+                      (res/->not-found))))
+              (catch IllegalArgumentException _
+                (-> context
+                    (res/->bad-request)))
+              (catch Throwable _
+                (-> context
+                    (res/->internal-server-error)))))})
+
 (def routes #{["/items" :get get-all]
+              ["/items/:id" :get by-id]
               ["/items" :post save]})

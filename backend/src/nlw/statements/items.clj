@@ -29,3 +29,13 @@
         (sql-helper/values entities)
         sql/format
         execute!)))
+
+
+(defn fetch-by-id [data-source id]
+  (let [execute! (partial jdbc/execute! data-source)]
+    (some-> (sql-helper/select :*)
+            (sql-helper/from item-table)
+            (sql-helper/where [:= :id id])
+            sql/format
+            execute!
+            first)))
