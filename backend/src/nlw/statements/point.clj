@@ -13,3 +13,18 @@
         (sql-helper/values entities)
         sql/format
         execute!)))
+
+(defn fetch-all
+  ([data-source]
+   (let [execute! (partial jdbc/execute! data-source)]
+     (-> (sql-helper/select :*)
+         (sql-helper/from table-name)
+         sql/format
+         execute!)))
+  ([data-source queries]
+   (let [execute! (partial jdbc/execute! data-source)]
+     (-> (sql-helper/select :*)
+         (sql-helper/from table-name)
+         (sql-helper/where queries)
+         sql/format
+         execute!))))
