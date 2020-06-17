@@ -13,9 +13,9 @@
                                             :port      #profile {:prod 80
                                                                  :test 3000
                                                                  :dev  3000}
-                                            :routes    [#resolve nlw.controllers.hello/routes
-                                                        #resolve nlw.controllers.point/routes
-                                                        #resolve nlw.controllers.items/routes]
+                                            :routes    [nlw.controllers.hello/routes
+                                                        nlw.controllers.point/routes
+                                                        nlw.controllers.items/routes]
                                             :file-path "resources/static/"
                                             :type      :immutant
                                             :join?     #profile {:dev  false
@@ -23,8 +23,8 @@
                                                                  :prod true}}
 
                                    :default-interceptors [{:type  :map
-                                                           :value #resolve nlw.interceptors.json/json-interception}
+                                                           :value nlw.interceptors.json/json-interception}
                                                           {:type  :fn
-                                                           :value #resolve nlw.interceptors.database/postgres-interceptor
+                                                           :value nlw.interceptors.database/postgres-interceptor
                                                            :args  [#ig/ref :nlw.components.database/postgres]}]}
  :nlw.components.pedestal/server {:service #ig/ref :nlw.components.pedestal/service}}

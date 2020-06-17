@@ -1,5 +1,6 @@
 (ns nlw.components.pedestal
   (:require [integrant.core :as ig]
+            [utils.namespaces :as util-ns]
             [io.pedestal.http :as http]
             [io.pedestal.http.cors :as cors]
             [io.pedestal.http.route :as route]
@@ -10,22 +11,29 @@
 (defn qualify-pedestal-ks [m]
   (medley/map-keys #(keyword "io.pedestal.http" (name %)) m))
 
+(defn process-routes [routes]
+  (->> routes
+      (map util-ns/resolve-sym)
+      (mapcat route-table/table-routes)))
+
 (defn- map->base-service [m]
   (-> m
-      (update :routes (partial mapcat route-table/table-routes))
+      (update :routes process-routes)
       (assoc :allowed-origins (cors/allow-origin {:creds true :allowed-origins (constantly true)}))
       qualify-pedestal-ks
       http/default-interceptors))
 
 (defn map->interceptor [{:keys [type value args]}]
   (let [interceptor-map (case type
-                          :map  value
-                          :fn (apply value args))]
+                          :map value
+                          :fn  (apply value args))]
     (interceptor/map->Interceptor interceptor-map)))
 
 (defn- add-default-interceptors [default-interceptors]
   (if default-interceptors
-    (let [interceptors (map map->interceptor default-interceptors)]
+    (let [interceptors (->> default-interceptors
+                            (map #(update % :value util-ns/resolve-sym))
+                            (map map->interceptor))]
       (fn [config]
         (update config ::http/interceptors (comp vec #(concat % interceptors)))))
     identity))
