@@ -22,4 +22,7 @@
   {:extra-paths ["test"]
    :extra-deps  {lambdaisland/kaocha        {:mvn/version "1.0.632"}
                  nubank/matcher-combinators {:mvn/version "2.1.0"}
-                 clj-http/clj-http          {:mvn/version "3.10.1"}}}}}
+                 clj-http/clj-http          {:mvn/version "3.10.1"}}}
+  :build {:extra-paths ["build"]
+          :extra-deps {badigeon/badigeon {:mvn/version "0.0.13"}}
+          :main-opts ["-m" "release"]}}}

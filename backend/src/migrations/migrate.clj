@@ -1,12 +1,13 @@
 (ns migrations.migrate
   (:require [aero.core :as aero]
             [clojure.java.io :as io]
-            [honeysql-postgres.helpers :as pg-helper]
             [honeysql-postgres.format]
+            [honeysql-postgres.helpers :as pg-helper]
             [honeysql.core :as sql]
             [honeysql.helpers :as sql-helper]
             [medley.core :as medley]
             [migrations.helpers :as migration-helper]
+            [migrations.format]
             [next.jdbc :as jdbc]))
 
 (def ^:private migration-table :public.internal-migrations)

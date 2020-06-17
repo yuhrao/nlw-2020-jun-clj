@@ -1,12 +1,10 @@
 {:nlw.components.migration/migration {:path "resources/migrations"}
  :nlw.components.database/postgres   {:config     {:dbtype   "postgresql"
                                                    :dbname   "postgres"
-                                                   :host     #profile {:dev  "localhost"
-                                                                       :test "localhost"}
-                                                   :port     #profile {:dev  5432
-                                                                       :test 5432}
-                                                   :user     #profile {:dev "nlw"}
-                                                   :password #profile {:dev "next_level"}}
+                                                   :host     #or [#env DB_HOST "localhost"]
+                                                   :port     #long #or [#env DB_PORT "5234"]
+                                                   :user     "nlw"
+                                                   :password "next_level"}
                                       :migrations #ig/ref :nlw.components.migration/migration}
 
  :nlw.components.pedestal/service {:config {:host      "0.0.0.0"

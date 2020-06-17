@@ -26,14 +26,6 @@
    (distinct)
    (keep #'ig/try-require)))
 
-(def try-require-every-ns-xf
-  (comp
-   (filter #(or (symbol? %) (keyword? %)))
-   (map #(or (keyword->namespace %) (symbol->namespace %)))
-   (remove nil?)
-   (distinct)
-   (keep #'ig/try-require)))
-
 (defn depth-first-seq
   ([coll]
    (depth-first-seq identity coll))
@@ -46,5 +38,11 @@
 (defn load-keyword-namespaces [coll]
   (depth-first-seq try-require-keywords-ns-xf coll))
 
-(defn load-every-namespace [coll]
-  (depth-first-seq try-require-every-ns-xf coll))
+(defn load-all-namespaces
+  ([config] (load-all-namespaces config []))
+  ([config additional-ns]
+   (->> config
+        ((juxt load-symbol-namespaces load-keyword-namespaces))
+        (apply (partial concat additional-ns))
+        vec
+        (keep #'ig/try-require))))
