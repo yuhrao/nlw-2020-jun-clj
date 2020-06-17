@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   database:
     image: postgres:12.3-alpine
@@ -11,3 +11,20 @@ services:
       - "/tmp/pgdata:/data"
     ports:
       - "5432:5432"
+  server:
+    depends_on:
+      - database
+    build:
+      context: ./
+      dockerfile: ./.deploy/Dockerfile
+    container_name: server
+    environment:
+      - DB_HOST=database
+      - DB_PORT=5432
+    ports:
+      - "3000:80"
+    
+networks:
+  nlw-network:
+    driver: bridge
+    name: nlw-network
