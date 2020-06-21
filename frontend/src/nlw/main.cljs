@@ -2,10 +2,10 @@
   (:require [reagent.dom :as rdom]
             [reagent.core :as r]))
 
-(def atm (r/atom {:name "Yuhri"}))
+(def state (r/atom {:name "Yuhri"}))
 
 (defn index []
-  [:h1 (str "Hello " (:name @atm) " !!")])
+  [:div "Hello" (:name @state)])
 
 (defn main []
   (rdom/render
